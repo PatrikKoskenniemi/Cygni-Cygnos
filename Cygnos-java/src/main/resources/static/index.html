@@ -121,6 +121,11 @@
         };
         window.requestAnimationFrame(showDebug);
 
+        function initiateGame() {
+            console.log("starting a new game!")
+            window.game = startGame();
+        }
+
         function startGame() {
             console.log("start game");
 
@@ -154,9 +159,12 @@
             return game;
         }
 
-        // TODO remove
         function guess(playerIndex, songGuessIndex) {
             console.log("guess", playerIndex, songGuessIndex);
+
+            if (window.game) {
+                window.game.guess(playerIndex, songGuessIndex);
+            }
         }
 
     </script>
@@ -165,12 +173,10 @@
 
 <body>
     <div class="container">
-        <h1>Search for tracks 6</h1>
-        <p>Type a search query and click on "Search". Then, click on any track to play it on server....</p>
-        <input type="text" id="query" value="" class="form-control" placeholder="Search for..." />
-        <button id="search" onclick="">Search</button>
-        <button id="stop" onclick="">Stop</button>
-        <button id="pause" onclick="">Pause</button>
+        <h1>Quiz Friend</h1>
+
+        <button id="" onclick="initiateGame()">Start Z Game!</button>
+
         <div id="results"></div>
         <p id="gesture"></p>
         <p id="debugData"></p>
