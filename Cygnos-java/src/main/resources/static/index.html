@@ -58,8 +58,9 @@
                                     hand.middleFinger.extended,
                                     hand.indexFinger.extended
                                 ].filter((x) => x).length;
+                                fingerCount = fingerCount || 1;
 
-                                guess(findPlayer(angle), fingerCount);
+                                guess(findPlayer(angle), fingerCount - 1);
                             }
                         }
                     }
@@ -85,11 +86,13 @@
             console.log("start game");
 
             var game = {};
+            var turnCounter = 0;
 
             game.guess = function (playerIndex, guessIndex) {
 
                 if (game.turn.isCorrectSong(guessIndex)) {
 
+                    console.log("turn ending");
                     game.turn.end();
 
                     // don't start the next turn immediately
@@ -100,19 +103,27 @@
             }
 
             function startTurn() {
+                console.log("starting turn " + turnCounter);
+
                 var turn = {};
 
                 turn.songs = getFourRandomSongs();
 
                 var correctSongIndex = 0; // randomize?
+                var hasEnded = false;
 
                 turn.isCorrectSong = function (songIndex) {
-                    return correctSongIndex === songIndex;
+                    return hasEnded && correctSongIndex === songIndex;
                 }
 
                 turn.end = function () {
+                    hasEnded = true;
                     // stop music
                 }
+
+                turnCounter += 1;
+
+                return turn;
             }
 
             function getFourRandomSongs() {
