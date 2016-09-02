@@ -11,6 +11,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class SearchProvider {
@@ -57,8 +58,33 @@ public class SearchProvider {
 
         List<Track> tracks = new ArrayList<>();
 
+        ArrayList<String> randomsongs = new ArrayList<>();
+
+        randomsongs.add("4ePP9So5xRzspjLFVVbj90");
+        randomsongs.add("7EFVJfuaqhIIvzN1HZpEpth");
+        randomsongs.add("7H6ev70Weq6DdpZyyTmUXk");
+        randomsongs.add("7v0kHF6tXT8ekVrJAbxpph");
+        randomsongs.add("1Je1IMUlBXcx1Fz0WE7oPT");
+        randomsongs.add("2Cy7QY8HPLk925AyNAt6OG");
+        randomsongs.add("57bgtoPSgt236HzfBOd8kj");
+        randomsongs.add("0mWiuXuLAJ3Brin3Or2x6v");
+        randomsongs.add("0AIfr4oi192dWLRJZrRz1O");
+
+        Random rand = new Random();
+        String songs = new String();
+
+        for (int i = 0; i<4; i++) {
+
+            if (i == 3) {
+                songs += randomsongs.get(rand.nextInt(randomsongs.size()));
+            } else {
+                songs += randomsongs.get(rand.nextInt(randomsongs.size()))+ ",";
+            }
+
+        }
+
         URI uri = new URIBuilder("https://api.spotify.com/v1/tracks")
-                .addParameter("ids", "7EFVJfuaqhIIvzNHZpEpth,7H6ev70Weq6DdpZyyTmUXk,7v0kHF6tXT8ekVrJAbxpph,1Je1IMUlBXcx1Fz0WE7oPT")
+                .addParameter("ids", songs)
                 .build();
 
         String response = Request.Get(
@@ -87,6 +113,11 @@ public class SearchProvider {
         }
 
         return tracks;
+    }
+
+    private String getAlbumImg(JsonNode node) {
+
+        return node.path("album").path("images").get(0).path("url").asText();
     }
 
     private String getValue(JsonNode node, String...elements) {
