@@ -65,6 +65,13 @@
                     });
         }
 
+        function stopMusic() {
+            $.ajax({
+                type: "POST",
+                url: "api/player/stop"
+            });
+        }
+
         Leap.loop(controllerOptions,
                 function (frame) {
                 try {
@@ -123,6 +130,7 @@
             var turnCounter = 0;
 
             game.guess = function (playerIndex, guessIndex) {
+                console.log("trying guess on", guessIndex);
 
                 if (game.turn.isCorrectSong(guessIndex)) {
 
@@ -143,16 +151,16 @@
 
                 turn.songs = getFourRandomSongs();
 
-                var correctSongIndex = 0; // randomize?
+                var correctSongIndex = Math.floor(Math.random() * 4);
                 var hasEnded = false;
 
                 turn.isCorrectSong = function (songIndex) {
-                    return hasEnded && correctSongIndex === songIndex;
+                    return !hasEnded && correctSongIndex === songIndex;
                 }
 
                 turn.end = function () {
                     hasEnded = true;
-                    // stop music
+                    stopMusic();
                 }
 
                 turnCounter += 1;
