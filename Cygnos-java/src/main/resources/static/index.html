@@ -39,6 +39,39 @@
             return Math.floor(sector);
         }
 
+        function getSongsAndStartPlaying(index) {
+            $.getJSON("api/search/demo/",
+                    function (tracks) {
+                        var items = [];
+                        $.each(tracks,
+                                function (index, track) {
+                                    items.push("<li data-trackData='" +
+                                            JSON.stringify(track) +
+                                            "'>" +
+                                            track.trackName + ' [' + track.artistName + ']' +
+                                            "</li>");
+                                });
+
+                        console.log(tracks);
+
+                        // TODO covers
+                        $("#results").html(items.join(""));
+                        $.ajax({
+                            type: "POST",
+                            url: "api/player/play",
+                            contentType: "application/json",
+                            data: JSON.stringify(tracks[index])
+                        });
+                    });
+        }
+
+        function stopMusic() {
+            $.ajax({
+                type: "POST",
+                url: "api/player/stop"
+            });
+        }
+
         Leap.loop(controllerOptions,
                 function (frame) {
                 try {
@@ -97,6 +130,7 @@
             var turnCounter = 0;
 
             game.guess = function (playerIndex, guessIndex) {
+                console.log("trying guess on", guessIndex);
 
                 if (game.turn.isCorrectSong(guessIndex)) {
 
@@ -121,19 +155,21 @@
 
                 turn.songs = getFourRandomSongs();
 
-                var correctSongIndex = 0; // randomize?
+                var correctSongIndex = Math.floor(Math.random() * 4);
                 var hasEnded = false;
 
                 turn.isCorrectSong = function (songIndex) {
-                    return hasEnded && correctSongIndex === songIndex;
+                    return !hasEnded && correctSongIndex === songIndex;
                 }
 
                 turn.end = function () {
                     hasEnded = true;
-                    // stop music
+                    stopMusic();
                 }
 
                 turnCounter += 1;
+
+                getSongsAndStartPlaying(correctSongIndex);
 
                 return turn;
             }
@@ -161,7 +197,7 @@
 
 <body>
     <div class="container">
-        <h1>Quiz Friend</h1>
+        <h1>Quizbuddy!</h1>
 
         <button id="" onclick="initiateGame()">Start Z Game!</button>
 

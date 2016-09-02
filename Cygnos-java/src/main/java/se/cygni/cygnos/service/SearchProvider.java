@@ -69,7 +69,7 @@ public class SearchProvider {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(response);
 
-        JsonNode items = rootNode.path("tracks").path("items");
+        JsonNode items = rootNode.path("tracks");
 
         Iterator<JsonNode> elements = items.elements();
         while(elements.hasNext()){
@@ -80,7 +80,8 @@ public class SearchProvider {
                         getValue(item, "preview_url"),
                         getValue(item.path("artists").get(0), "name"),
                         getValue(item, "name"),
-                        getValue(item, "album", "name")
+                        getValue(item, "album", "name"),
+                        getValue(item.path("album").get(0), "images", "url")
                 ));
             }
         }
