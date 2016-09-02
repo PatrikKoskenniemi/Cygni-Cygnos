@@ -4,51 +4,6 @@
 <head>
     <title>Cygnos music player</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-    <script type='text/javascript'>
-        $(document)
-            .ready(function () {
-                $("#search")
-                    .click(function () {
-                        $.getJSON("api/search/" + $("#query").val(),
-                            function (tracks) {
-                                var items = [];
-                                $.each(tracks,
-                                    function (index, track) {
-                                        items.push("<li data-trackData='" +
-                                           JSON.stringify(track) +
-                                            "'>" +
-                                            track.trackName + ' [' + track.artistName + ']' +
-                                            "</li>");
-                                    });
-
-                                $("#results").html(items.join(""));
-                            });
-                    });
-                $("#stop").click(function () {
-                    $.ajax({
-                        type: "POST",
-                        url: "api/player/stop"
-                    });
-                })
-                $("#pause").click(function () {
-                    $.ajax({
-                        type: "POST",
-                        url: "api/player/pause"
-                    });
-                })
-                $("#results")
-                    .on("click",
-                        "li",
-                        function () {
-                            $.ajax({
-                                type: "POST",
-                                url: "api/player/play",
-                                contentType: "application/json",
-                                data: $(this).attr("data-trackData")
-                            });
-                        });
-            });
-    </script>
     <script src="http://js.leapmotion.com/leap-0.6.3.min.js"></script>
     <script>
         var controllerOptions = { enableGestures: true };
