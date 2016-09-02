@@ -55,41 +55,62 @@
         var lastCall = 0;
         Leap.loop(controllerOptions,
             function (frame) {
-                //Only accept one call every three seconds, to avoid flooding our poor little server
-                if (new Date() - lastCall < 3000)
-                    return;
-               
+                try {
+                    //Only accept one call every three seconds, to avoid flooding our poor little server
+                    if (new Date() - lastCall < 1000)
+                        return;
 
-                if (frame.hands.length > 0) {
-                    //thumb down (vertical hand) to stop
-                    for (var i = 0; i < frame.hands.length; i++) {
-                        var hand = frame.hands[i];
-                        if (Math.abs(hand.palmNormal[0]) > 0.7) {
-                            $.ajax({
-                                type: "POST",
-                                url: "api/player/stop",
-                                contentType: "application/json",
-                            });
-                            $("#gesture").html("<i>thumb down</i>")
+
+                    if (frame.hands.length > 0) {
+                        //thumb down (vertical hand) to stop
+                        for (var i = 0; i < frame.hands.length; i++) {
+                            var hand = frame.hands[i];
+                            if (Math.abs(hand.palmNormal[0]) > 0.7) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "api/player/stop",
+                                    contentType: "application/json",
+                                });
+                                $("#gesture").html("<i>thumb down</i>")
+                                lastCall = new Date();
+                            }
+                        }
+
+                        //Devil horns plays rock!
+                        for (var i = 0; i < frame.hands.length; i++) {
+                            var hand = frame.hands[i];
+                            if (hand.pinky.extended && !hand.ringFinger.extended && !hand.middleFinger.extended && hand.indexFinger.extended) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "api/player/stop",
+                                    url: "api/player/play",
+                                    contentType: "application/json",
+                                    data: JSON.stringify({ "previewUrl": "https://p.scdn.co/mp3-preview/1ee9f1b0c3e3b327dd49ebc6dd64266b01adb96a" })
+                                });
+                                $("#gesture").html("<i>Devil horns</i>")
+                                lastCall = new Date();
+                            }
+                        }
+
+                        //POC try to find direction of hand
+                        if (frame.hands.length) {
+                            console.log("found direction");
                             lastCall = new Date();
                         }
-                    }
-
-                    //Devil horns plays rock!
-                    for (var i = 0; i < frame.hands.length; i++) {
-                        var hand = frame.hands[i];
-                        if (hand.pinky.extended && !hand.ringFinger.extended && !hand.middleFinger.extended && hand.indexFinger.extended) {
-                            $.ajax({
-                                type: "POST",
-                                url: "api/player/stop",
-                                url: "api/player/play",
-                                contentType: "application/json",
-                                data: JSON.stringify({ "previewUrl": "https://p.scdn.co/mp3-preview/1ee9f1b0c3e3b327dd49ebc6dd64266b01adb96a" })
-                            });
-                            $("#gesture").html("<i>Devil horns</i>")
-                            lastCall = new Date();
+                        for (var i = 0; i < frame.hands.length; i++) {
+                            var hand = frame.hands[i];
+                            console.log(hand.direction, hand.yaw());
+                            // var d = hand.direction;
+                            // var a = Leap.vec3.angle(d, [0,0,0]);
+                            // console.log(a);
+                        }
+                        for (var i = 0; i < frame.gestures.length; i++) {
+                            var gesture = frame.gestures[i];
+                            // console.log(gesture.direction);
                         }
                     }
+                } catch (error) {
+                    console.error(error);
                 }
             });
     </script>
@@ -98,7 +119,7 @@
 
 <body>
     <div class="container">
-        <h1>Search for tracks</h1>
+        <h1>Search for tracks 6</h1>
         <p>Type a search query and click on "Search". Then, click on any track to play it on server....</p>
         <input type="text" id="query" value="" class="form-control" placeholder="Search for..." />
         <button id="search" onclick="">Search</button>

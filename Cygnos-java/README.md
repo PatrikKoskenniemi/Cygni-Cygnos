@@ -62,5 +62,3 @@ curl http://localhost:8080/api/player/state
 [Spotify API](https://developer.spotify.com/web-api/)
 [Leap Motion API](https://developer.leapmotion.com/documentation/javascript/devguide/Leap_Overview.html)
 [LeapJS](https://github.com/leapmotion/leapjs)
-
-Test commit

@@ -17,5 +17,6 @@ public class CygnosApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(CygnosApplication.class, args);
+		System.out.println("hej2");
 	}
 }
