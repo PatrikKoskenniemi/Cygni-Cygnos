@@ -69,7 +69,7 @@ public class SearchProvider {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(response);
 
-        JsonNode items = rootNode.path("tracks").path("items");
+        JsonNode items = rootNode.path("tracks");
 
         Iterator<JsonNode> elements = items.elements();
         while(elements.hasNext()){
