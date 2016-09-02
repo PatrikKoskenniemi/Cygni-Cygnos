@@ -57,8 +57,8 @@
                         $.each(tracks,
                                 function (index, track) {
                                     items.push("<li data-trackData='" +
-                                            JSON.stringify(track) +
-                                            "'>" +
+                                            JSON.stringify(track) + "'>" +
+                                            "<img src='"+track.albumImg+"'/>>"+
                                             track.trackName + ' [' + track.artistName + ']' +
                                             "</li>");
                                 });
