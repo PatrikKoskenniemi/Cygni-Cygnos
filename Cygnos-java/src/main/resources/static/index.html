@@ -137,11 +137,34 @@
         window.requestAnimationFrame(showDebug);
 
         function startGame() {
+            var game = {};
 
-        }
+            game.guess = function (playerIndex, guessIndex) {
 
-        function guess(playerIndex, songGuessIndex) {
+                if (game.turn.isCorrectSong(guessIndex)) {
+                    game.turn = startTurn();
+                }
+            }
 
+            function startTurn() {
+                var turn = {};
+
+                turn.songs = getFourRandomSongs();
+
+                var correctSongIndex = 0; // randomize?
+
+                turn.isCorrectSong = function (songIndex) {
+                    return correctSongIndex === songIndex;
+                }
+            }
+
+            function getFourRandomSongs() {
+                return [{}, {}, {}, {}];
+            }
+
+            game.turn = startTurn();
+
+            return game;
         }
 
     </script>
