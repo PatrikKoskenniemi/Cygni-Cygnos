@@ -80,7 +80,8 @@ public class SearchProvider {
                         getValue(item, "preview_url"),
                         getValue(item.path("artists").get(0), "name"),
                         getValue(item, "name"),
-                        getValue(item, "album", "name")
+                        getValue(item, "album", "name"),
+                        getValue(item.path("album").get(0), "images", "url")
                 ));
             }
         }

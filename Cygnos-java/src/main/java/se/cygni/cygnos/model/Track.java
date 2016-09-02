@@ -11,9 +11,7 @@ public class Track {
     private String trackName;
     private String albumName;
 
-//    public Track() {
-//
-//    }
+    private String albumImg;
 
     @JsonCreator
     public Track(
@@ -21,13 +19,15 @@ public class Track {
             @JsonProperty("previewUrl")  String previewUrl,
             @JsonProperty("artistName")  String artistName,
             @JsonProperty("trackName")  String trackName,
-            @JsonProperty("albumName")  String albumName) {
+            @JsonProperty("albumName")  String albumName,
+            @JsonProperty("albumImg")  String albumImg) {
 
         this.id = id;
         this.previewUrl = previewUrl;
         this.artistName = artistName;
         this.trackName = trackName;
         this.albumName = albumName;
+        this.albumImg = albumImg;
     }
 
     public String getId() {
@@ -52,6 +52,14 @@ public class Track {
 
     public void setArtistName(String artistName) {
         this.artistName = artistName;
+    }
+
+    public String getAlbumImg() {
+        return albumImg;
+    }
+
+    public void setAlbumImg(String albumImg) {
+        this.albumImg = albumImg;
     }
 
     public String getTrackName() {
