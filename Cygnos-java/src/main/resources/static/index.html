@@ -11,6 +11,17 @@
             font-family: 'Rakoon_PersonalUse';
             src: url('Rakoon_PersonalUse.ttf');
         }
+
+        .header {
+            font-family: "Rakoon_personalUse", Times, serif;
+            font-size: 1000%;
+            text-align: center;
+        }
+
+        body {
+            background-color: #fffb00;
+        }
+
     </style>
 
     <script>
@@ -46,8 +57,8 @@
                         $.each(tracks,
                                 function (index, track) {
                                     items.push("<li data-trackData='" +
-                                            JSON.stringify(track) +
-                                            "'>" +
+                                            JSON.stringify(track) + "'>" +
+                                            "<img src='"+track.albumImg+"'/>>"+
                                             track.trackName + ' [' + track.artistName + ']' +
                                             "</li>");
                                 });
@@ -137,7 +148,7 @@
                     console.log("turn ending");
                     game.turn.end();
 
-                    var scoreElement = $($("#scores li .score")[playerIndex]));
+                    var scoreElement = $($("#scores li .score")[playerIndex]);
 
                     scoreElement.html(parseInt(scoreElement.html()) + 1);
 
@@ -197,7 +208,7 @@
 
 <body>
     <div class="container">
-        <h1>Quizbuddy!</h1>
+        <h1 class="header">Quizbuddy!</h1>
 
         <button id="" onclick="initiateGame()">Start Z Game!</button>
 
