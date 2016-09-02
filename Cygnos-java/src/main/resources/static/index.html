@@ -97,13 +97,14 @@
 
                     // don't start the next turn immediately
                     setTimeout(function () {
-                        console.log("starting turn " + turnCounter);
                         game.turn = startTurn();
                     }, 5000);
                 }
             }
 
             function startTurn() {
+                console.log("starting turn " + turnCounter);
+
                 var turn = {};
 
                 turn.songs = getFourRandomSongs();
