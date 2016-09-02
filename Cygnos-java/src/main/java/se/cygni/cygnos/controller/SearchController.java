@@ -26,4 +26,9 @@ public class SearchController {
 
         return searchProvider.search(query);
     }
+    @RequestMapping("/search/demo")
+    public List<Track> searchTracksForDemo() throws Exception {
+
+        return searchProvider.searchforDemo();
+    }
 }

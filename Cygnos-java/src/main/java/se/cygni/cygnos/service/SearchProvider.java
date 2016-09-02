@@ -51,6 +51,43 @@ public class SearchProvider {
         return tracks;
     }
 
+
+
+    public List<Track> searchforDemo() throws Exception {
+
+        List<Track> tracks = new ArrayList<>();
+
+        URI uri = new URIBuilder("https://api.spotify.com/v1/tracks")
+                .addParameter("ids", "7EFVJfuaqhIIvzNHZpEpth,7H6ev70Weq6DdpZyyTmUXk,7v0kHF6tXT8ekVrJAbxpph,1Je1IMUlBXcx1Fz0WE7oPT")
+                .build();
+
+        String response = Request.Get(
+                uri).
+                execute().
+                returnContent().asString();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode rootNode = objectMapper.readTree(response);
+
+        JsonNode items = rootNode.path("tracks").path("items");
+
+        Iterator<JsonNode> elements = items.elements();
+        while(elements.hasNext()){
+            JsonNode item = elements.next();
+            if (item.path("type").asText().equals("track")) {
+                tracks.add(new Track(
+                        getValue(item, "id"),
+                        getValue(item, "preview_url"),
+                        getValue(item.path("artists").get(0), "name"),
+                        getValue(item, "name"),
+                        getValue(item, "album", "name")
+                ));
+            }
+        }
+
+        return tracks;
+    }
+
     private String getValue(JsonNode node, String...elements) {
         JsonNode endNode = node;
         for (String element : elements) {
@@ -58,4 +95,6 @@ public class SearchProvider {
         }
         return endNode.asText();
     }
+
+
 }
