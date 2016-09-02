@@ -56,6 +56,11 @@
         Leap.loop(controllerOptions,
             function (frame) {
                 try {
+                    window.debugData = frame.hands.map((h) => {return {
+                                "pos": h.palmPosition,
+                                "vel": h.palmVelocity
+                            }});
+
                     //Only accept one call every three seconds, to avoid flooding our poor little server
                     if (new Date() - lastCall < 1000)
                         return;
@@ -94,15 +99,24 @@
 
                         //POC try to find direction of hand
                         if (frame.hands.length) {
-                            console.log("found direction");
-                            lastCall = new Date();
+                            // console.log("found direction");
                         }
                         for (var i = 0; i < frame.hands.length; i++) {
                             var hand = frame.hands[i];
-                            console.log(hand.direction, hand.yaw());
+                            // console.log(hand.direction, hand.yaw(), hand.palmVelocity, hand.palmPosition);
                             // var d = hand.direction;
                             // var a = Leap.vec3.angle(d, [0,0,0]);
                             // console.log(a);
+
+                            var p = hand.palmVelocity;
+                            var xv = p[0];
+                            var zv = p[2];
+                            var vel = Math.sqrt(xv*xv + zv*zv);
+                            if (vel > 100) {
+                                var v = Math.atan2(zv, xv);
+                                console.log(v, vel, hand.palmVelocity);
+                                lastCall = new Date();
+                            }
                         }
                         for (var i = 0; i < frame.gestures.length; i++) {
                             var gesture = frame.gestures[i];
@@ -113,6 +127,14 @@
                     console.error(error);
                 }
             });
+
+        function showDebug() {
+            if (window.debugData) {
+                $("#gesture").html(JSON.stringify(window.debugData));
+            }
+            window.requestAnimationFrame(showDebug);
+        };
+        window.requestAnimationFrame(showDebug);
     </script>
 
 </head>
@@ -127,6 +149,7 @@
         <button id="pause" onclick="">Pause</button>
         <div id="results"></div>
         <p id="gesture"></p>
+        <p id="debugData"></p>
     </div>
 </body>
 
