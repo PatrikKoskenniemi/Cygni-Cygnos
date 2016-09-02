@@ -137,6 +137,10 @@
                     console.log("turn ending");
                     game.turn.end();
 
+                    var scoreElement = $($("#scores li .score")[playerIndex]));
+
+                    scoreElement.html(parseInt(scoreElement.html()) + 1);
+
                     // don't start the next turn immediately
                     setTimeout(function () {
                         game.turn = startTurn();
@@ -200,6 +204,14 @@
         <div id="results"></div>
         <p id="gesture"></p>
         <p id="debugData"></p>
+        
+        <div id="scores">
+            <ul>
+                <li>Player 1: <span class="score">0</span> points</li>
+                <li>Player 2: <span class="score">0</span> points</li>
+                <li>Player 3: <span class="score">0</span> points</li>
+            </ul>
+        </div>
     </div>
 </body>
 
