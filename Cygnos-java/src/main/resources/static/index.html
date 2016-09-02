@@ -134,7 +134,13 @@
             game.guess = function (playerIndex, guessIndex) {
 
                 if (game.turn.isCorrectSong(guessIndex)) {
-                    game.turn = startTurn();
+
+                    game.turn.end();
+
+                    // don't start the next turn immediately
+                    setTimeout(function () {
+                        game.turn = startTurn();
+                    }, 5000);
                 }
             }
 
@@ -147,6 +153,10 @@
 
                 turn.isCorrectSong = function (songIndex) {
                     return correctSongIndex === songIndex;
+                }
+
+                turn.end = function () {
+                    // stop music
                 }
             }
 
