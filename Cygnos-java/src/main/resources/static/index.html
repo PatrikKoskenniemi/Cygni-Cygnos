@@ -86,6 +86,7 @@
             console.log("start game");
 
             var game = {};
+            var turnCounter = 0;
 
             game.guess = function (playerIndex, guessIndex) {
 
@@ -96,6 +97,7 @@
 
                     // don't start the next turn immediately
                     setTimeout(function () {
+                        console.log("starting turn " + turnCounter);
                         game.turn = startTurn();
                     }, 5000);
                 }
@@ -107,16 +109,18 @@
                 turn.songs = getFourRandomSongs();
 
                 var correctSongIndex = 0; // randomize?
-                var hsaEnded = false;
+                var hasEnded = false;
 
                 turn.isCorrectSong = function (songIndex) {
-                    return hsaEnded && correctSongIndex === songIndex;
+                    return hasEnded && correctSongIndex === songIndex;
                 }
 
                 turn.end = function () {
-                    hsaEnded = true;
+                    hasEnded = true;
                     // stop music
                 }
+
+                turnCounter += 1;
 
                 return turn;
             }
