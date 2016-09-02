@@ -62,14 +62,14 @@ public class SearchProvider {
         ArrayList<String> randomsongs = new ArrayList<>();
 
         randomsongs.add("4ePP9So5xRzspjLFVVbj90");
-        randomsongs.add("7EFVJfuaqhIIvzN1HZpEpth");
+        // randomsongs.add("7EFVJfuaqhIIvzN1HZpEpth");
         randomsongs.add("7H6ev70Weq6DdpZyyTmUXk");
         randomsongs.add("7v0kHF6tXT8ekVrJAbxpph");
         randomsongs.add("1Je1IMUlBXcx1Fz0WE7oPT");
         randomsongs.add("2Cy7QY8HPLk925AyNAt6OG");
         randomsongs.add("57bgtoPSgt236HzfBOd8kj");
         randomsongs.add("0mWiuXuLAJ3Brin3Or2x6v");
-        randomsongs.add("0AIfr4oi192dWLRJZrRz1O");
+        // randomsongs.add("0AIfr4oi192dWLRJZrRz1O");
 
         Random rand = new Random();
         String songs = new String();
@@ -77,9 +77,9 @@ public class SearchProvider {
         for (int i = 0; i<4; i++) {
 
             if (i == 3) {
-                songs += randomsongs.get(rand.nextInt(randomsongs.size()));
+                songs += getRandomSong(songs, randomsongs, rand);
             } else {
-                songs += randomsongs.get(rand.nextInt(randomsongs.size()))+ ",";
+                songs += getRandomSong(songs, randomsongs, rand) + ",";
             }
 
         }
@@ -116,9 +116,13 @@ public class SearchProvider {
         return tracks;
     }
 
-    private String getAlbumImg(JsonNode node) {
-
-        return node.path("album").path("images").get(0).path("url").asText();
+    private String getRandomSong(String songs, ArrayList<String> randomsongs, Random rand) {
+        while (true) {
+            String nextSong = randomsongs.get(rand.nextInt(randomsongs.size()));
+            if (!songs.contains(nextSong)) {
+                return nextSong;
+            }
+        }
     }
 
     private String getValue(JsonNode node, String...elements) {
