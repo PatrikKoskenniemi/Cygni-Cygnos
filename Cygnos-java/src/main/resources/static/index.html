@@ -53,74 +53,59 @@
     <script>
         var controllerOptions = { enableGestures: true };
         var lastCall = 0;
+
+        function saveDebugData(frame) {
+            window.debugData = frame.hands.map((h) => {
+                        return {
+                            "pos": h.palmPosition,
+                            "vel": h.palmVelocity,
+                            "norm": h.palmNormal[0],
+                            pinky: h.pinky.extended,
+                            ring: h.ringFinger.extended,
+                            middle: h.middleFinger.extended,
+                            index: h.indexFinger.extended
+                        }
+                    });
+        }
+
+        // Each player gets one third of the pie
+        function findPlayer(angle) {
+            angle = Math.abs(angle); // Only support one side for POC
+            var sector = angle / Math.PI * 3;
+            console.log("sector detected", sector);
+            return Math.floor(sector);
+        }
+
         Leap.loop(controllerOptions,
-            function (frame) {
+                function (frame) {
                 try {
-                    window.debugData = frame.hands.map((h) => {return {
-                                "pos": h.palmPosition,
-                                "vel": h.palmVelocity
-                            }});
+                    saveDebugData(frame);
 
                     //Only accept one call every three seconds, to avoid flooding our poor little server
                     if (new Date() - lastCall < 1000)
                         return;
 
-
                     if (frame.hands.length > 0) {
-                        //thumb down (vertical hand) to stop
                         for (var i = 0; i < frame.hands.length; i++) {
                             var hand = frame.hands[i];
-                            if (Math.abs(hand.palmNormal[0]) > 0.7) {
-                                $.ajax({
-                                    type: "POST",
-                                    url: "api/player/stop",
-                                    contentType: "application/json",
-                                });
-                                $("#gesture").html("<i>thumb down</i>")
-                                lastCall = new Date();
-                            }
-                        }
-
-                        //Devil horns plays rock!
-                        for (var i = 0; i < frame.hands.length; i++) {
-                            var hand = frame.hands[i];
-                            if (hand.pinky.extended && !hand.ringFinger.extended && !hand.middleFinger.extended && hand.indexFinger.extended) {
-                                $.ajax({
-                                    type: "POST",
-                                    url: "api/player/stop",
-                                    url: "api/player/play",
-                                    contentType: "application/json",
-                                    data: JSON.stringify({ "previewUrl": "https://p.scdn.co/mp3-preview/1ee9f1b0c3e3b327dd49ebc6dd64266b01adb96a" })
-                                });
-                                $("#gesture").html("<i>Devil horns</i>")
-                                lastCall = new Date();
-                            }
-                        }
-
-                        //POC try to find direction of hand
-                        if (frame.hands.length) {
-                            // console.log("found direction");
-                        }
-                        for (var i = 0; i < frame.hands.length; i++) {
-                            var hand = frame.hands[i];
-                            // console.log(hand.direction, hand.yaw(), hand.palmVelocity, hand.palmPosition);
-                            // var d = hand.direction;
-                            // var a = Leap.vec3.angle(d, [0,0,0]);
-                            // console.log(a);
-
                             var p = hand.palmVelocity;
                             var xv = p[0];
                             var zv = p[2];
                             var vel = Math.sqrt(xv*xv + zv*zv);
                             if (vel > 100) {
-                                var v = Math.atan2(zv, xv);
-                                console.log(v, vel, hand.palmVelocity);
+                                var angle = Math.atan2(zv, xv);
+                                console.log(angle, vel, hand.palmVelocity);
                                 lastCall = new Date();
+
+                                var fingerCount = [
+                                    hand.pinky.extended,
+                                    hand.ringFinger.extended,
+                                    hand.middleFinger.extended,
+                                    hand.indexFinger.extended
+                                ].filter((x) => x).length;
+
+                                guess(findPlayer(angle), fingerCount);
                             }
-                        }
-                        for (var i = 0; i < frame.gestures.length; i++) {
-                            var gesture = frame.gestures[i];
-                            // console.log(gesture.direction);
                         }
                     }
                 } catch (error) {
@@ -130,13 +115,15 @@
 
         function showDebug() {
             if (window.debugData) {
-                $("#gesture").html(JSON.stringify(window.debugData));
+                $("#gesture").html("<pre>"+JSON.stringify(window.debugData, null, 4)+"</pre>");
             }
             window.requestAnimationFrame(showDebug);
         };
         window.requestAnimationFrame(showDebug);
 
         function startGame() {
+            console.log("start game");
+
             var game = {};
 
             game.guess = function (playerIndex, guessIndex) {
@@ -165,6 +152,11 @@
             game.turn = startTurn();
 
             return game;
+        }
+
+        // TODO remove
+        function guess(playerIndex, songGuessIndex) {
+            console.log("guess", playerIndex, songGuessIndex);
         }
 
     </script>
