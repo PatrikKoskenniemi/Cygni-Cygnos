@@ -107,12 +107,14 @@
                 turn.songs = getFourRandomSongs();
 
                 var correctSongIndex = 0; // randomize?
+                var hsaEnded = false;
 
                 turn.isCorrectSong = function (songIndex) {
-                    return correctSongIndex === songIndex;
+                    return hsaEnded && correctSongIndex === songIndex;
                 }
 
                 turn.end = function () {
+                    hsaEnded = true;
                     // stop music
                 }
 
